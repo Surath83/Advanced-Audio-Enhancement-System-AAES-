@@ -19,7 +19,7 @@ function AudioPlayer({ title, audioRef, src, isPlaying, setIsPlaying, onPlay }) 
     <div className={Style.box}>
       <h2>{title}</h2>
       <audio ref={audioRef} src={src} controls></audio>
-      <button className={Style.audioButton} onClick={togglePlay}>
+      <button className={Style.audioButton} onClick={togglePlay} disabled={!src}>
         {isPlaying ? "Pause" : "Play"}
       </button>
     </div>
@@ -29,14 +29,17 @@ function AudioPlayer({ title, audioRef, src, isPlaying, setIsPlaying, onPlay }) 
 function App() {
   const audioRef1 = useRef(null);
   const audioRef2 = useRef(null);
+  const fileInputRef = useRef(null);
+
   const [isPlaying1, setIsPlaying1] = useState(false);
   const [isPlaying2, setIsPlaying2] = useState(false);
   const [audioSrc, setAudioSrc] = useState(null);
   const [enhancedAudio, setEnhancedAudio] = useState(null);
   const [isExportable, setIsExportable] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef(null);
+  const [selectedFormat, setSelectedFormat] = useState("wav");
 
+  // Stop any playing audio
   const stopAllAudio = () => {
     if (audioRef1.current) audioRef1.current.pause();
     if (audioRef2.current) audioRef2.current.pause();
@@ -48,20 +51,24 @@ function App() {
     const file = event.target.files[0];
     if (!file) return;
 
+    setUploading(true);
+    setIsExportable(false);
+
     const formData = new FormData();
     formData.append("file", file);
-    setUploading(true);
 
     try {
+      setAudioSrc(URL.createObjectURL(file)); // Preview original audio
+
       const response = await axios.post("http://127.0.0.1:5000/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setAudioSrc(URL.createObjectURL(file)); // Original audio
-      setEnhancedAudio(response.data.processed_file); // Processed audio from backend
+      setEnhancedAudio(response.data.processed_file); // Processed file from backend
       setIsExportable(true);
     } catch (error) {
-      console.error("Upload failed:", error);
+      console.error("❌ Upload failed:", error);
+      alert("Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -72,22 +79,25 @@ function App() {
 
     try {
       const response = await axios.get(enhancedAudio, { responseType: "blob" });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const blob = new Blob([response.data], { type: `audio/${selectedFormat}` });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
+
       link.href = url;
-      link.setAttribute("download", "enhancedAudio.mp3"); // File name
+      link.setAttribute("download", `enhancedAudio.${selectedFormat}`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error("Download failed:", error);
+      console.error("❌ Download failed:", error);
+      alert("Download failed. Please try again.");
     }
   };
 
   return (
     <div className={Style.body}>
       <center>
-        <h1 className={Style.head}>Advanced-Audio-Enhancement-System [AAES]</h1>
+        <h1 className={Style.head}>🎧 Advanced Audio Enhancement System (AAES)</h1>
 
         <div className={Style.audioContainer}>
           <AudioPlayer
@@ -124,12 +134,25 @@ function App() {
         />
 
         <button className={Style.import} onClick={() => fileInputRef.current.click()} disabled={uploading}>
-          {uploading ? "Uploading..." : "Import"}
+          {uploading ? "⏳ Uploading..." : "📂 Import"}
         </button>
 
-        <button className={Style.export} onClick={handleDownload} disabled={!isExportable}>
-          Export
-        </button>
+        <div className={Style.exportContainer}>
+          <label htmlFor="format"><h2>Download as: </h2></label>
+          <select
+            id="format"
+            value={selectedFormat}
+            onChange={(e) => setSelectedFormat(e.target.value)}
+            disabled={!isExportable}
+          >
+            <option value="wav">WAV</option>
+            <option value="mp3">MP3</option>
+          </select>
+
+          <button className={Style.export} onClick={handleDownload} disabled={!isExportable}>
+            ⬇️ Export
+          </button>
+        </div>
       </center>
     </div>
   );

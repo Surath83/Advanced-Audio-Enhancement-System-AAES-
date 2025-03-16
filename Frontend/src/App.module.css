@@ -82,3 +82,61 @@
     box-shadow: 0px 0px 10px 2px rgb(119, 118, 118);
     background-color: #eff168;
 }
+
+.exportContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between elements */
+    margin-top: 15px;/* Dark background for contrast */
+    padding: 10px 15px;
+    border-radius: 8px;/* Subtle border */
+  }
+  
+  .exportContainer label {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .exportContainer select {
+    background-color: #292929;
+    color: #fff;
+    border: 1px solid #666;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .exportContainer select:disabled {
+    background-color: #444;
+    color: #888;
+    cursor: not-allowed;
+  }
+  
+  .exportContainer select:hover:not(:disabled) {
+    background-color: #3a3a3a;
+  }
+  
+  .export {
+    background-color: #ff5722; /* Vibrant button color */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .export:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  
+  .export:hover:not(:disabled) {
+    background-color: #e64a19;
+  }
+  
