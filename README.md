@@ -63,19 +63,19 @@ AAES/
 ```bash
 cd backend
 pip install -r requirements.txt
-python main.py  # Start the API Server
+python index.py  # Start the API Server
 ```
 
 ### Frontend Setup (React)
 ```bash
 cd frontend
-npm install  # Install Dependencies
-npm start    # Run the Development Server
+npm ci  # Install Dependencies
+npm run dev    # Run the Development Server
 ```
 
 ## Usage
-1. Run the **backend server** (`python main.py`)
-2. Start the **React frontend** (`npm start`)
+1. Run the **backend server** (`python index.py`)
+2. Start the **React frontend** (`npm run dev`)
 3. Upload an audio file, apply enhancement features, and download the optimized version
 
 ## API Endpoints (Backend)

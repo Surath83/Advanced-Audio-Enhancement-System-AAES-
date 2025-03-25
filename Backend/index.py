@@ -1,7 +1,9 @@
 import os
 import numpy as np
 import soundfile as sf
-from scipy.signal import butter, filtfilt, iirpeak, lfilter
+import librosa.display
+import noisereduce as nr
+from scipy.signal import butter, filtfilt, lfilter
 from pydub import AudioSegment
 from flask import Flask, request, send_from_directory, jsonify
 from flask_cors import CORS
@@ -36,6 +38,19 @@ def load_audio(audio_path):
     except Exception as e:
         raise ValueError(f"❌ Error loading audio: {e}")
 
+# Ensure Both Channels Have the Same Length
+def match_audio_lengths(left, right):
+    max_length = max(len(left), len(right))
+    left = np.pad(left, (0, max_length - len(left)), mode='constant')
+    right = np.pad(right, (0, max_length - len(right)), mode='constant')
+    return left, right
+
+# Noise Reduction using Noisereduce
+def noise_reduction_noisereduce(audio, sr):
+    print("🔇 Reducing noise")
+    noise_sample = audio[:sr]  # Assume first second is noise
+    return nr.reduce_noise(y=audio, sr=sr, y_noise=noise_sample)
+
 # Band-Pass Filter (50Hz - 19kHz)
 def band_pass_filter(audio, sr, low_cut=50, high_cut=19000):
     print("🎛️ Applying Band-Pass Filter (50Hz - 19kHz)")
@@ -54,32 +69,23 @@ def high_pitch_boost(audio, sr, boost_db=5, freq=3000):
     boosted = filtfilt(b, a, audio)
     return audio + (boosted * (10 ** (boost_db / 20)))
 
-# Right-Side Vocal Enhancement
+# Vocal Boost
 def vocal_boost(left, right):
-    print("🎙️ Enhancing Left-Side Vocals")
-    print("🎙️ Enhancing Right-Side Vocals")
-    right = right * 1.15  # Slightly increase right channel vocals
-    left = left * 1.15  # Slightly increase left channel vocals
+    print("🎙️ Enhancing Vocals")
+    left *= 1.15
+    right *= 1.15
     return left, right
 
 # Capacitor Effect Simulation
 def capacitor_effect(audio, sr, smoothing_factor=0.3):
-    print("🔋 Applying Capacitor Effect (Amplifier-like smoothing)")
+    print("🔋 Applying Capacitor Effect")
     alpha = smoothing_factor
     return lfilter([alpha], [1, alpha - 1], audio)
-
-# Noise Reduction
-def noise_reduction(audio, sr):
-    print("🔇 Reducing Noise")
-    noise_profile = np.mean(np.abs(librosa.stft(audio))[:, :50], axis=1)
-    D = librosa.stft(audio)
-    D_denoised = np.where(np.abs(D) > noise_profile[:, None], D, 0)
-    return librosa.istft(D_denoised)
 
 # Final Volume Boost
 def final_volume_boost(audio):
     print("🔊 Increasing Final Volume")
-    return audio * 1.4  # Increase by 40%
+    return audio * 1.4
 
 # Final Processing Pipeline
 def process_audio(input_path, output_path):
@@ -90,6 +96,9 @@ def process_audio(input_path, output_path):
             input_path = convert_to_wav(input_path)
 
         left_audio, right_audio, sr = load_audio(input_path)
+
+        left_audio = noise_reduction_noisereduce(left_audio, sr)
+        right_audio = noise_reduction_noisereduce(right_audio, sr)
 
         left_audio = band_pass_filter(left_audio, sr)
         right_audio = band_pass_filter(right_audio, sr)
@@ -102,11 +111,10 @@ def process_audio(input_path, output_path):
         left_audio = capacitor_effect(left_audio, sr)
         right_audio = capacitor_effect(right_audio, sr)
 
+        left_audio, right_audio = match_audio_lengths(left_audio, right_audio)
         stereo_audio = np.vstack((left_audio, right_audio))
 
-        final_audio = noise_reduction(stereo_audio, sr)
-
-        final_audio = final_volume_boost(final_audio)
+        final_audio = final_volume_boost(stereo_audio)
 
         sf.write(output_path, final_audio.T, sr)
         print(f"✅ Processing complete: {output_path}")
