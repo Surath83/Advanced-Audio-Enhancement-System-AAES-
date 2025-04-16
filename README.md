@@ -1,9 +1,11 @@
 # Advanced Audio Enhancement System (AAES) 🎵
 
 ## Overview
+
 **AAES** is a **digital signal processing (DSP)-based** solution designed to enhance audio quality by reducing noise, improving stereo separation, and optimizing frequency balance. Built with a **React frontend** and a **Python backend**, AAES offers a seamless and efficient user experience. The system leverages advanced algorithms for **real-time audio enhancement**, making it suitable for various applications like **music streaming, VoIP communication, gaming, and assistive technologies**.
 
 ## Features
+
 ✅ **Noise Reduction** – Removes background noise for clearer audio  
 ✅ **Stereo Enhancement** – Expands left-right channel separation  
 ✅ **Dynamic Equalization** – Optimizes frequency response for balanced sound  
@@ -12,22 +14,31 @@
 ✅ **Multi-Format Support** – Works with MP3, WAV, and FLAC formats  
 ✅ **Cross-Platform Compatibility** – Can be used on desktop and mobile devices  
 
-## Tech Stack
+## Tech Stack & Libraries
+
 ### Frontend (React)
+
 - **React.js** – UI Development
 - **Tailwind CSS** – Styling for responsive design
 - **Axios** – API communication
-- **Web Audio API** – Audio processing in the browser
+- **Web Audio API** – Browser-based audio processing
 - **React Router** – Navigation and routing
 - **Redux/Context API** – State management
+- **Howler.js** – Advanced audio playback and control
+- **Tone.js** – Audio synthesis and processing
 
 ### Backend (Python)
+
 - **Flask/FastAPI** – API development and request handling
 - **NumPy & SciPy** – Signal processing and mathematical operations
 - **PyDub** – Audio manipulation and format conversion
 - **FFmpeg** – Processing and encoding audio files
+- **Librosa** – Advanced audio analysis and feature extraction
+- **NoiseReduce** – Noise reduction using deep learning techniques
+- **Soundfile** – WAV/FLAC file handling
 
 ## Project Structure
+
 ```
 AAES/
 │── frontend/               # React Frontend
@@ -43,7 +54,7 @@ AAES/
 │   ├── app/
 │   │   ├── routes/        # API Endpoints
 │   │   ├── services/      # DSP Processing Functions
-│   │   ├── main.py        # Entry Point
+│   │   └── main.py        # Entry Point
 │   └── requirements.txt   # Dependencies
 │
 │── docs/                  # Documentation Files
@@ -54,19 +65,23 @@ AAES/
 ```
 
 ## Installation & Setup
+
 ### Prerequisites
+
 - **Node.js & npm/yarn** (For React Frontend)
 - **Python 3.x & pip** (For Backend)
 - **FFmpeg** (For audio processing, install via `sudo apt install ffmpeg` on Linux/macOS or use Windows binaries)
 
 ### Backend Setup (Python)
+
 ```bash
 cd backend
 pip install -r requirements.txt
-python index.py  # Start the API Server
+python main.py  # Start the API Server
 ```
 
 ### Frontend Setup (React)
+
 ```bash
 cd frontend
 npm ci  # Install Dependencies
@@ -74,20 +89,24 @@ npm run dev    # Run the Development Server
 ```
 
 ## Usage
-1. Run the **backend server** (`python index.py`)
+
+1. Run the **backend server** (`python main.py`)
 2. Start the **React frontend** (`npm run dev`)
 3. Upload an audio file, apply enhancement features, and download the optimized version
 
 ## API Endpoints (Backend)
-| Method | Endpoint       | Description                      |
-|--------|--------------|----------------------------------|
-| POST   | `/upload`    | Upload an audio file             |
-| GET    | `/process`   | Process and enhance the audio    |
-| GET    | `/download`  | Download the enhanced audio file |
-| GET    | `/status`    | Check the processing status      |
+
+| Method | Endpoint    | Description                      |
+| ------ | ----------- | -------------------------------- |
+| POST   | `/upload`   | Upload an audio file             |
+| GET    | `/process`  | Process and enhance the audio    |
+| GET    | `/download` | Download the enhanced audio file |
+| GET    | `/status`   | Check the processing status      |
 
 ## Contribution
+
 🚀 Contributions are welcome! Follow these steps to contribute:
+
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature-branch`)
 3. Commit your changes (`git commit -m 'Add new feature'`)
@@ -95,17 +114,19 @@ npm run dev    # Run the Development Server
 5. Open a pull request
 
 ## License
-📜 **MIT License** – Free to use and modify under open-source terms.
+
+📝 **MIT License** – Free to use and modify under open-source terms.
 
 ---
 
 ## Collaborators
+
 👥 This project is maintained by:
+
 - [Surath Chowdhury](https://github.com/Surath83)
 - [Sristi Priya](https://github.com/SristiPriya01)
 - [Sneha Mal](https://github.com/Snehamal)
 - [Sameer Kumar Choudhury](https://github.com/contributor4)
 
-📧 **Contact:** surath172003@gmail.com
-
+📧 **Contact:** [surath172003@gmail.com](mailto:surath172003@gmail.com)
 
