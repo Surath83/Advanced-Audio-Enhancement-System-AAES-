@@ -37,13 +37,17 @@ def load_audio(audio_path):
         return y[0], y[1], sr  # Left & Right channels
     except Exception as e:
         raise ValueError(f"❌ Error loading audio: {e}")
-
+    
 # Ensure Both Channels Have the Same Length
 def match_audio_lengths(left, right):
     max_length = max(len(left), len(right))
     left = np.pad(left, (0, max_length - len(left)), mode='constant')
     right = np.pad(right, (0, max_length - len(right)), mode='constant')
     return left, right
+
+
+#Edit from here
+
 
 # Noise Reduction using Noisereduce
 def noise_reduction_noisereduce(audio, sr):
@@ -87,6 +91,9 @@ def final_volume_boost(audio):
     print("🔊 Increasing Final Volume")
     return audio * 1.4
 
+
+#Till this line add different  functions
+
 # Final Processing Pipeline
 def process_audio(input_path, output_path):
     try:
@@ -96,6 +103,10 @@ def process_audio(input_path, output_path):
             input_path = convert_to_wav(input_path)
 
         left_audio, right_audio, sr = load_audio(input_path)
+
+
+#Edit from here
+        # plz refer the workflow diagram and do accordingly
 
         left_audio = noise_reduction_noisereduce(left_audio, sr)
         right_audio = noise_reduction_noisereduce(right_audio, sr)
@@ -111,10 +122,14 @@ def process_audio(input_path, output_path):
         left_audio = capacitor_effect(left_audio, sr)
         right_audio = capacitor_effect(right_audio, sr)
 
-        left_audio, right_audio = match_audio_lengths(left_audio, right_audio)
+#Length checker don,t remove this function
+        left_audio, right_audio = match_audio_lengths(left_audio, right_audio) 
+
         stereo_audio = np.vstack((left_audio, right_audio))
 
         final_audio = final_volume_boost(stereo_audio)
+#Till this line call different  functions
+
 
         sf.write(output_path, final_audio.T, sr)
         print(f"✅ Processing complete: {output_path}")

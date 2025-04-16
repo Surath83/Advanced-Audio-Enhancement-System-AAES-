@@ -7,10 +7,11 @@ Backend:
     postman:            #testing
 
         >GET:http://127.0.0.1:5000/download/{processed_filename}
-        >POST:http://127.0.0.1:5000/upload       Body: [key:file   (file),value]
+        >POST:http://127.0.0.1:5000/upload       Body: [key: file   (file),value]
 
 
 
 Frontend:
+Onetime: npm ci;
 //
 >npm run dev            #starting the frontend [localhost:5173]
