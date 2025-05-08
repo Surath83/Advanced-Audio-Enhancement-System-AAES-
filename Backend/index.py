@@ -23,7 +23,7 @@ def convert_to_wav(input_path):
     print(f"🔍 Converting to WAV (if necessary): {input_path}")
     output_path = input_path.rsplit(".", 1)[0] + ".wav"
     audio = AudioSegment.from_file(input_path)
-    audio = audio.set_channels(2)  # Ensure stereo
+    audio = audio.set_channels(2)
     audio.export(output_path, format="wav")
     return output_path
 
@@ -33,11 +33,11 @@ def load_audio(audio_path):
     try:
         y, sr = librosa.load(audio_path, sr=None, mono=False)
         if y.ndim == 1:
-            y = np.vstack((y, y))  # Convert mono to pseudo-stereo
-        return y[0], y[1], sr  # Left & Right channels
+            y = np.vstack((y, y))
+        return y[0], y[1], sr
     except Exception as e:
         raise ValueError(f"❌ Error loading audio: {e}")
-    
+
 # Ensure Both Channels Have the Same Length
 def match_audio_lengths(left, right):
     max_length = max(len(left), len(right))
@@ -45,24 +45,11 @@ def match_audio_lengths(left, right):
     right = np.pad(right, (0, max_length - len(right)), mode='constant')
     return left, right
 
-
-#Edit from here
-
-
-# Noise Reduction using Noisereduce
+# Noise Reduction
 def noise_reduction_noisereduce(audio, sr):
     print("🔇 Reducing noise")
-    noise_sample = audio[:sr]  # Assume first second is noise
+    noise_sample = audio[:, :sr] if audio.ndim == 2 else audio[:sr]
     return nr.reduce_noise(y=audio, sr=sr, y_noise=noise_sample)
-
-# Band-Pass Filter (50Hz - 19kHz)
-def band_pass_filter(audio, sr, low_cut=50, high_cut=19000):
-    print("🎛️ Applying Band-Pass Filter (50Hz - 19kHz)")
-    nyquist = sr / 2
-    low = low_cut / nyquist
-    high = high_cut / nyquist
-    b, a = butter(4, [low, high], btype="band")
-    return filtfilt(b, a, audio)
 
 # Boost High-Pitch Vocals
 def high_pitch_boost(audio, sr, boost_db=5, freq=3000):
@@ -72,6 +59,26 @@ def high_pitch_boost(audio, sr, boost_db=5, freq=3000):
     b, a = butter(2, freq, btype="high")
     boosted = filtfilt(b, a, audio)
     return audio + (boosted * (10 ** (boost_db / 20)))
+
+# LMS Adaptive Filter
+def apply_lms_filter(audio, desired=None, mu=0.001, filter_order=32):
+    print("🔄 Applying LMS Filter")
+    n_samples = len(audio)
+    if desired is None:
+        desired = audio
+
+    w = np.zeros(filter_order)
+    filtered_audio = np.zeros(n_samples)
+
+    for n in range(filter_order, n_samples):
+        x = audio[n - filter_order:n][::-1]
+        y = np.dot(w, x)
+        e = desired[n] - y
+        w += 2 * mu * e * x
+        filtered_audio[n] = y
+
+    return filtered_audio
+
 
 # Vocal Boost
 def vocal_boost(left, right):
@@ -91,10 +98,7 @@ def final_volume_boost(audio):
     print("🔊 Increasing Final Volume")
     return audio * 1.4
 
-
-#Till this line add different  functions
-
-# Final Processing Pipeline
+# Main Audio Processor
 def process_audio(input_path, output_path):
     try:
         print(f"🎧 Processing audio: {input_path}")
@@ -104,15 +108,8 @@ def process_audio(input_path, output_path):
 
         left_audio, right_audio, sr = load_audio(input_path)
 
-
-#Edit from here
-        # plz refer the workflow diagram and do accordingly
-
-        left_audio = noise_reduction_noisereduce(left_audio, sr)
-        right_audio = noise_reduction_noisereduce(right_audio, sr)
-
-        left_audio = band_pass_filter(left_audio, sr)
-        right_audio = band_pass_filter(right_audio, sr)
+        left_audio = apply_lms_filter(left_audio)
+        right_audio = apply_lms_filter(right_audio)
 
         left_audio = high_pitch_boost(left_audio, sr)
         right_audio = high_pitch_boost(right_audio, sr)
@@ -122,14 +119,13 @@ def process_audio(input_path, output_path):
         left_audio = capacitor_effect(left_audio, sr)
         right_audio = capacitor_effect(right_audio, sr)
 
-#Length checker don,t remove this function
-        left_audio, right_audio = match_audio_lengths(left_audio, right_audio) 
+        left_audio, right_audio = match_audio_lengths(left_audio, right_audio)
 
         stereo_audio = np.vstack((left_audio, right_audio))
 
-        final_audio = final_volume_boost(stereo_audio)
-#Till this line call different  functions
+        stereo_audio = noise_reduction_noisereduce(stereo_audio, sr)
 
+        final_audio = final_volume_boost(stereo_audio)
 
         sf.write(output_path, final_audio.T, sr)
         print(f"✅ Processing complete: {output_path}")
@@ -138,13 +134,13 @@ def process_audio(input_path, output_path):
         print(f"❌ Processing error: {e}")
         raise ValueError(f"Processing error: {e}")
 
-# Flask API Routes (Upload & Download)
+# Flask Routes
 @app.route("/upload", methods=["POST"])
 def upload_audio():
     file = request.files.get("file")
     if not file:
         return jsonify({"error": "❌ No file uploaded"}), 400
-    
+
     filename = file.filename
     file_path = os.path.join(UPLOAD_FOLDER, filename)
     processed_filename = f"enhanced_{filename.rsplit('.', 1)[0]}.wav"
