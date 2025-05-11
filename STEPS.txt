@@ -1,4 +1,6 @@
 Backend:
+Onetime: python -m venv venv;                #venv created
+       : pip install -r requirements. txt    #modules imported to venv
 //
 >venv\Scripts\activate  #activating environment
 >python index.py        #starting the backend [localhost:5000]

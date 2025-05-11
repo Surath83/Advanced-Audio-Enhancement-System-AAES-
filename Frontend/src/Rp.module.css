@@ -1,0 +1,55 @@
+.container {
+  padding: 30px;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.paperBox {
+  background-color: rgba(111, 245, 227, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #000;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.papersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.papersList li {
+  margin: 15px 0;
+}
+
+.paperLink {
+  color: #00acc1;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.paperLink:hover {
+  color: #0051cc;
+  text-decoration: underline;
+}

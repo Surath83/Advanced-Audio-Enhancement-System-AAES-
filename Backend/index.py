@@ -1,8 +1,6 @@
 import os
 import numpy as np
 import soundfile as sf
-import librosa.display
-import noisereduce as nr
 from scipy.signal import butter, filtfilt, lfilter
 from pydub import AudioSegment
 from flask import Flask, request, send_from_directory, jsonify
@@ -45,11 +43,43 @@ def match_audio_lengths(left, right):
     right = np.pad(right, (0, max_length - len(right)), mode='constant')
     return left, right
 
-# Noise Reduction
-def noise_reduction_noisereduce(audio, sr):
-    print("🔇 Reducing noise")
-    noise_sample = audio[:, :sr] if audio.ndim == 2 else audio[:sr]
-    return nr.reduce_noise(y=audio, sr=sr, y_noise=noise_sample)
+# MMSE Noise Reduction
+def mmse_filter(audio, sr, noise_estimation_duration=1.0):
+    print("🔇 Reducing noise using MMSE")
+
+    if audio.ndim == 2:
+        audio_mono = np.mean(audio, axis=0)
+    else:
+        audio_mono = audio
+
+    noise_samples = int(noise_estimation_duration * sr)
+    noise_estimate = audio_mono[:noise_samples]
+
+    stft_audio = librosa.stft(audio_mono)
+    stft_noise = librosa.stft(noise_estimate)
+
+    noise_psd = np.mean(np.abs(stft_noise) ** 2, axis=1)
+    audio_psd = np.abs(stft_audio) ** 2
+
+    mmse_gain = audio_psd / (audio_psd + noise_psd[:, np.newaxis] + 1e-8)
+    filtered_stft = mmse_gain * stft_audio
+
+    denoised_audio_mono = librosa.istft(filtered_stft)
+
+    denoised_audio = np.vstack((denoised_audio_mono, denoised_audio_mono))
+    return denoised_audio
+
+# STFT-based Denoising
+def stft_denoising(audio, sr):
+    print("✨ Applying STFT Denoising")
+    D = librosa.stft(audio)
+    magnitude, phase = np.abs(D), np.angle(D)
+    
+    threshold = np.median(magnitude)
+    magnitude = np.where(magnitude > threshold, magnitude, 0)
+    
+    cleaned = magnitude * np.exp(1j * phase)
+    return librosa.istft(cleaned)
 
 # Boost High-Pitch Vocals
 def high_pitch_boost(audio, sr, boost_db=5, freq=3000):
@@ -79,7 +109,6 @@ def apply_lms_filter(audio, desired=None, mu=0.001, filter_order=32):
 
     return filtered_audio
 
-
 # Vocal Boost
 def vocal_boost(left, right):
     print("🎙️ Enhancing Vocals")
@@ -96,7 +125,7 @@ def capacitor_effect(audio, sr, smoothing_factor=0.3):
 # Final Volume Boost
 def final_volume_boost(audio):
     print("🔊 Increasing Final Volume")
-    return audio * 1.4
+    return audio * 1.2
 
 # Main Audio Processor
 def process_audio(input_path, output_path):
@@ -111,6 +140,9 @@ def process_audio(input_path, output_path):
         left_audio = apply_lms_filter(left_audio)
         right_audio = apply_lms_filter(right_audio)
 
+        left_audio = stft_denoising(left_audio, sr)
+        right_audio = stft_denoising(right_audio, sr)
+
         left_audio = high_pitch_boost(left_audio, sr)
         right_audio = high_pitch_boost(right_audio, sr)
 
@@ -120,10 +152,9 @@ def process_audio(input_path, output_path):
         right_audio = capacitor_effect(right_audio, sr)
 
         left_audio, right_audio = match_audio_lengths(left_audio, right_audio)
-
         stereo_audio = np.vstack((left_audio, right_audio))
 
-        stereo_audio = noise_reduction_noisereduce(stereo_audio, sr)
+        stereo_audio = mmse_filter(stereo_audio, sr)
 
         final_audio = final_volume_boost(stereo_audio)
 
@@ -157,8 +188,7 @@ def upload_audio():
 
 @app.route("/download/<filename>", methods=["GET"])
 def download_audio(filename):
-    return send_from_directory(PROCESSED_FOLDER, filename, as_attachment=True)
+    return send_from_directory(PROCESSED_FOLDER, filename)
 
 if __name__ == "__main__":
-    print("🚀 Starting Flask server on http://127.0.0.1:5000")
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
