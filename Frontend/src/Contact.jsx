@@ -27,7 +27,7 @@ function Contact() {
           PyDub – Format Conversion & Manipulation <br />
           FFmpeg – Encoding / Decoding <br />
           Librosa – Feature Extraction <br />
-          NoiseReduce – Deep Learning Noise Removal <br />
+          NoiseReduce – LMS Filter & MMSE Filter <br />
           Soundfile – WAV / FLAC I/O
         </p>
       </div>
