@@ -1,43 +1,65 @@
+/* -----------------------------------------------------
+   FIXED NAVBAR (ALWAYS ON TOP)
+------------------------------------------------------ */
 .navbar {
-    background-color: transparent;
-    filter: drop-shadow(10px);
-    display: flex;
-    backdrop-filter: blur(4px);
-    color: rgb(255, 255, 255);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.068);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 40px;
+
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
+/* LOGO */
 .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: rgb(39, 38, 38);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: 0.5px;
 }
 
+/* NAV LINKS */
 .navLinks {
     list-style: none;
     display: flex;
-    gap: 50px;
+    gap: 45px;
     margin: 0;
     padding: 0;
 }
 
 .navLinks li a {
     text-decoration: none;
-    color: #3a3a3a;
+    color: #444;
+    font-size: 1.05rem;
     font-weight: 500;
-    transition: color 0.3s ease, transform 0.2s ease;
+    padding: 6px 2px;
+
+    transition: color 0.2s ease, transform 0.2s ease; /* 0.2s animation */
 }
 
 .navLinks li a:hover {
-    color: #000000; /* Aqua highlight */
-    transform: scale(1.05);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+/* -----------------------------------------------------
+   SMOOTH SCROLL + OFFSET (-20px)
+------------------------------------------------------ */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Every section scrolled into gets a fixed margin offset */
+.section {
+    scroll-margin-top: 80px;  /* Navbar height + (-20px offset) */
 }

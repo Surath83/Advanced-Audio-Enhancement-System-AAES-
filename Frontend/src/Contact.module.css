@@ -1,7 +1,9 @@
 .container {
-    padding: 50px;
-    background: linear-gradient(to right, #f8f9fa, #e0f7fa);
+    padding: 30px 10px;
+    margin: 20px;
+    background: linear-gradient(to right, #f8f9fa, #e0f7fa, #f8f9fa);
     font-family: Arial, sans-serif;
+    border-radius: 12px;
   }
 
   .heading {

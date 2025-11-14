@@ -1,21 +1,11 @@
+.section {
+  padding-top: 10px;   /* space so content is not hidden behind navbar */
+  margin-bottom: 60px;  /* spacing between sections */
+  text-align: center;
+}
 .bb{
-  background-color: #ffffff;
+  width: 97%;
 }
 .member{
-    float:right;
-  }
-
-.intro{
-    margin-top: 80px;
-    font-size: 25px;
-    text-align: center;
-    padding: 20px;
-  }
-html {
-  scroll-behavior: smooth;
-}
-
-.section {
-  padding-top: 100px; /* offset for navbar */
-  margin-top: -100px;
+  float: right;
 }

@@ -10,7 +10,6 @@ function App() {
       <div className={Style.bb}>
         <Navbar />
         <section id="AAES" className={Style.section}>
-          <h2 className={Style.intro}>Advanced Audio Enhancement System (AAES)</h2>
           <div className={Style.aaes}>
             <Aaes />
           </div>
