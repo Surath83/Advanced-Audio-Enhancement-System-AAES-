@@ -1,132 +1,188 @@
-# Advanced Audio Enhancement System (AAES) 🎵
+<h1 align="center">🎵 Advanced Audio Enhancement System (AAES)</h1>
 
-## Overview
+<p align="center">
+  A DSP-powered system for real-time audio enhancement, noise reduction, and intelligent stereo optimization.
+</p>
 
-**AAES** is a **digital signal processing (DSP)-based** solution designed to enhance audio quality by reducing noise, improving stereo separation, and optimizing frequency balance. Built with a **React frontend** and a **Python backend**, AAES offers a seamless and efficient user experience. The system leverages advanced algorithms for **real-time audio enhancement**, making it suitable for various applications like **music streaming, VoIP communication, gaming, and assistive technologies**.
+<hr/>
 
-## Features
+<h2>📌 Overview</h2>
 
-✅ **Noise Reduction** – Removes background noise for clearer audio  
-✅ **Stereo Enhancement** – Expands left-right channel separation  
-✅ **Dynamic Equalization** – Optimizes frequency response for balanced sound  
-✅ **Real-Time Processing** – Fast and efficient DSP algorithms for instant results  
-✅ **User-Friendly Interface** – Simple and intuitive UI for ease of use  
-✅ **Multi-Format Support** – Works with MP3, WAV, and FLAC formats  
-✅ **Cross-Platform Compatibility** – Can be used on desktop and mobile devices  
+<p>
+  <strong>AAES</strong> is a <strong>Digital Signal Processing (DSP)-based</strong> audio enhancement system built using a <strong>React frontend</strong> and a <strong>Python backend</strong>. 
+  It improves audio clarity with noise reduction, frequency balancing, and stereo enhancement — ideal for:
+</p>
 
-## Tech Stack & Libraries
+<ul>
+  <li>🎧 Music enhancement</li>
+  <li>🗣️ VoIP & communication clarity</li>
+  <li>♿ Assistive hearing technologies</li>
+  <li>🎙️ Real-time DSP processing</li>
+</ul>
 
-### Frontend (React)
+<hr/>
 
-- **React.js** – UI Development
-- **Tailwind CSS** – Styling for responsive design
-- **Axios** – API communication
-- **Web Audio API** – Browser-based audio processing
-- **React Router** – Navigation and routing
-- **Redux/Context API** – State management
-- **Howler.js** – Advanced audio playback and control
-- **Tone.js** – Audio synthesis and processing
+<h2>✨ Key Features</h2>
 
-### Backend (Python)
+<ul>
+  <li>✅ <strong>Noise Reduction</strong> – Removes background noise</li>
+  <li>✅ <strong>Stereo Enhancement</strong> – Improves left-right audio clarity</li>
+  <li>✅ <strong>Dynamic Equalization</strong> – Balances audio frequencies</li>
+  <li>✅ <strong>Real-Time DSP</strong> – FFT/STFT-based fast processing</li>
+  <li>✅ <strong>User-Friendly React UI</strong></li>
+  <li>✅ Supports <strong>WAV, MP3, FLAC</strong></li>
+  <li>✅ <strong>Cross-Platform</strong> (Web + Local Processing)</li>
+</ul>
 
-- **Flask/FastAPI** – API development and request handling
-- **NumPy & SciPy** – Signal processing and mathematical operations
-- **PyDub** – Audio manipulation and format conversion
-- **FFmpeg** – Processing and encoding audio files
-- **Librosa** – Advanced audio analysis and feature extraction
-- **NoiseReduce** – Noise reduction using deep learning techniques
-- **Soundfile** – WAV/FLAC file handling
+<hr/>
 
-## Project Structure
+<h2>🧰 Tech Stack</h2>
 
-```
+<h3>Frontend (React.js)</h3>
+<ul>
+  <li>React + Vite</li>
+  <li>Tailwind CSS</li>
+  <li>Axios</li>
+  <li>React Router</li>
+  <li>Web Audio API</li>
+</ul>
+
+<h3>Backend (Python)</h3>
+<ul>
+  <li>Flask</li>
+  <li>NumPy, SciPy</li>
+  <li>PyDub</li>
+  <li>Librosa</li>
+  <li>SoundFile</li>
+  <li>FFmpeg</li>
+  <li>Custom DSP modules <code>(services/)</code></li>
+</ul>
+
+<hr/>
+
+<h2>📁 Updated Project Structure</h2>
+
+<pre>
 AAES/
-│── frontend/               # React Frontend
-│   ├── src/
-│   │   ├── components/    # UI Components
-│   │   ├── pages/         # Application Pages
-│   │   ├── utils/         # Utility Functions
-│   │   ├── App.js         # Main Component
-│   │   └── index.js       # Entry Point
-│   └── public/            # Static Files (HTML, Icons, etc.)
+│── frontend/                          
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   └── src/
+│       ├── App.css
+│       ├── App.jsx
+│       ├── index.css
+│       ├── main.jsx
+│       ├── assets/
+│       ├── components/albumCover.jsx
+│       └── components/utils.jsx
 │
-│── backend/               # Python Backend
+│── backend/                           
 │   ├── app/
-│   │   ├── routes/        # API Endpoints
-│   │   ├── services/      # DSP Processing Functions
-│   │   └── main.py        # Entry Point
-│   └── requirements.txt   # Dependencies
+│   │   ├── main.py
+│   │   ├── services/
+│   │   │   └── lnr.py
+│   │   └── routes/api.py
+│   └── requirements.txt
 │
-│── docs/                  # Documentation Files
-│── README.md              # Project Documentation
-│── package.json           # Frontend Dependencies
-│── requirements.txt       # Backend Dependencies
-│── .gitignore             # Git Ignore File
-```
+│── docs/
+│── README.md
+│── .gitignore
+</pre>
 
-## Installation & Setup
+<hr/>
 
-### Prerequisites
+<h2>⚙️ Installation & Setup</h2>
 
-- **Node.js & npm/yarn** (For React Frontend)
-- **Python 3.x & pip** (For Backend)
-- **FFmpeg** (For audio processing, install via `sudo apt install ffmpeg` on Linux/macOS or use Windows binaries)
+<h3>🔧 Backend Setup (Python)</h3>
 
-### Backend Setup (Python)
+<p><strong>Prerequisites:</strong> Python 3.9+, FFmpeg installed</p>
 
-```bash
+<pre>
 cd backend
 pip install -r requirements.txt
-python main.py  # Start the API Server
-```
+python app/main.py
+</pre>
 
-### Frontend Setup (React)
+<h3>💻 Frontend Setup (React + Vite)</h3>
 
-```bash
+<pre>
 cd frontend
-npm ci  # Install Dependencies
-npm run dev    # Run the Development Server
-```
+npm install
+npm run dev
+</pre>
 
-## Usage
+<hr/>
 
-1. Run the **backend server** (`python main.py`)
-2. Start the **React frontend** (`npm run dev`)
-3. Upload an audio file, apply enhancement features, and download the optimized version
+<h2>🚀 Usage</h2>
 
-## API Endpoints (Backend)
+<ol>
+  <li>Start backend server: <code>python app/main.py</code></li>
+  <li>Start React frontend: <code>npm run dev</code></li>
+  <li>Open the UI and upload an audio file</li>
+  <li>Choose enhancement features</li>
+  <li>Preview / download the enhanced audio</li>
+</ol>
 
-| Method | Endpoint    | Description                      |
-| ------ | ----------- | -------------------------------- |
-| POST   | `/upload`   | Upload an audio file             |
-| GET    | `/process`  | Process and enhance the audio    |
-| GET    | `/download` | Download the enhanced audio file |
-| GET    | `/status`   | Check the processing status      |
+<hr/>
 
-## Contribution
+<h2>🔌 API Endpoints</h2>
 
-🚀 Contributions are welcome! Follow these steps to contribute:
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>POST</td>
+    <td>/upload</td>
+    <td>Upload audio file</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/process</td>
+    <td>Process and enhance audio</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/download</td>
+    <td>Download enhanced audio</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/status</td>
+    <td>Check processing status</td>
+  </tr>
+</table>
 
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature-branch`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature-branch`)
-5. Open a pull request
+<hr/>
 
-## License
+<h2>🧑‍💻 Contributors</h2>
 
-📝 **MIT License** – Free to use and modify under open-source terms.
+<ul>
+  <li><strong>Surath Chowdhury</strong> – Creator</li>
+  <li><strong>Sristi Priya</strong> – Frontend Developer</li>
+  <li><strong>Sneha Mal</strong> – UI/UX</li>
+  <li><strong>Sameer Kumar Choudhury</strong> – Contributor</li>
+</ul>
 
----
+<p>📧 <strong>Contact:</strong> <a href="mailto:surath172003@gmail.com">surath172003@gmail.com</a></p>
 
-## Collaborators
+<hr/>
 
-👥 This project is maintained by:
+<h2>📝 License</h2>
 
-- [Surath Chowdhury](https://github.com/Surath83)
-- [Sristi Priya](https://github.com/SristiPriya01)
-- [Sneha Mal](https://github.com/Snehamal)
-- [Sameer Kumar Choudhury](https://github.com/contributor4)
+<p><strong>MIT License</strong> — Free to use, modify, and distribute.</p>
 
-📧 **Contact:** [surath172003@gmail.com](mailto:surath172003@gmail.com)
+<hr/>
 
+<h2>🎉 Improvements Included</h2>
+
+<ul>
+  <li>✔ Accurate folder structure based on actual GitHub repo</li>
+  <li>✔ Professional formatting</li>
+  <li>✔ Improved readability</li>
+  <li>✔ Polished UI/UX wording</li>
+  <li>✔ Clean HTML formatting for GitHub</li>
+</ul>
