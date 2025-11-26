@@ -6,11 +6,18 @@ uploads/
 venv/
 
 # ----------------------------
+# Ignore generated report files
+# ----------------------------
+aaes_reports.csv
+*.csv
+
+# ----------------------------
 # Python cache & bytecode
 # ----------------------------
 __pycache__/
 *.py[cod]
 *.pyo
+
 
 # ----------------------------
 # Environment and config

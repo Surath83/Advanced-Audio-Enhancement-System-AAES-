@@ -1,8 +1,11 @@
 import os
 import sys
 import json
+import time
 import numpy as np
 import soundfile as sf
+from report import generate_report
+from report import append_report_to_excel
 from scipy.signal import butter, filtfilt, lfilter
 from pydub import AudioSegment
 from flask import Flask, request, send_from_directory, jsonify
@@ -203,12 +206,11 @@ def apply_audiogram(L, R, sr, profile, tuning_gain_percent):
 
 def process_audio_with_full_chain(input_path, output_path, hearing_loss, tuning_gain):
     """
-    Runs the full pipeline:
-    - convert/load
-    - LMS -> STFT denoise -> high-pitch -> vocal boost -> capacitor -> match length
-    - MMSE on mono -> audiogram tuning -> final volume -> save
+    Full AAES DSP pipeline + reporting hooks.
     """
     try:
+        start_time = time.time()
+
         print(f"🎧 Processing audio (full chain): {input_path}")
 
         # 1. Convert to WAV if needed
@@ -217,6 +219,9 @@ def process_audio_with_full_chain(input_path, output_path, hearing_loss, tuning_
 
         # 2. Load audio
         left, right, sr = load_audio(input_path)
+
+        # FIX: Save ORIGINAL stereo audio for SNR/PESQ/STOI
+        original_stereo = np.vstack((left, right))   
 
         # 3. Combine channels for INITIAL noise reduction
         print("🔰 Initial Noise Reduction (MMSE at beginning)")
@@ -259,6 +264,26 @@ def process_audio_with_full_chain(input_path, output_path, hearing_loss, tuning_
 
         # 12. SAVE OUTPUT
         sf.write(output_path, final_audio.T, sr)
+
+        end_time = time.time()             
+        latency_ms = (end_time - start_time) * 1000.0 
+
+        # ---- GENERATE METRIC REPORT ----
+        report_data = generate_report(
+            original_audio=original_stereo,
+            enhanced_audio=final_audio,
+            sr=sr,
+            hearing_loss=hearing_loss,
+            tuning_gain=tuning_gain,
+            latency_ms=latency_ms,
+        )
+        report_json_path = output_path.replace(".wav", "_report.json")
+        with open(report_json_path, "w") as f:
+            json.dump(report_data, f, indent=4)
+
+        append_report_to_excel(report_data)
+        
+        print(f"📄 Report generated at: {report_json_path}")
         print(f"✅ Processing complete: {output_path}")
 
     except Exception as e:
