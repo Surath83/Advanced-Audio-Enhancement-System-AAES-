@@ -1,11 +1,11 @@
 import styles from './Rp.module.css';
 
 const researchPapers = [
-  { title: "Research Paper 1: DSP", url: "https://ieeexplore.ieee.org/document/1430249" },
-  { title: "Research Paper 2: Filteration 1", url: "https://ieeexplore.ieee.org/document/10694208" },
-  { title: "Research Paper 3: Filteration 2", url: "https://ieeexplore.ieee.org/document/9103036" },
-  { title: "Research Paper 4: Noisereduction 1", url: "https://ieeexplore.ieee.org/document/10872040" },
-  { title: "Research Paper 5: Noisereduction 2", url: "https://ieeexplore.ieee.org/document/10448279" },
+  { title: "Research Paper 1: MMSE (noise reduction)", url: "https://ieeexplore.ieee.org/document/6554705" },
+  { title: "Research Paper 2: LMS (dsp,noise/error)", url: "https://www.academia.edu/download/82056394/a265103-1050.pdf" },
+  { title: "Research Paper 3: STFT (dsp)", url: "https://ieeexplore.ieee.org/abstract/document/7009929" },
+  { title: "Research Paper 4: L-filter (filter,dsp)", url: "https://ieeexplore.ieee.org/abstract/document/8301696/" },
+  { title: "Research Paper 5: Tuning (channel,dB gain)", url: "https://link.springer.com/article/10.1007/s10772-019-09599-5" },
 ];
 
 const Rp = () => {

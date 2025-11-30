@@ -1,5 +1,6 @@
 # report.py
 import json
+import csv
 import numpy as np
 import librosa
 import pandas as pd
@@ -59,19 +60,19 @@ def append_report_to_csv(report_data):
     print(f"📈 CSV updated: {CSV_FILE}")
 
 # ---------- Utility Functions ----------
-def compute_snr(clean, enhanced):
-    noise = clean - enhanced
-    snr = 10 * np.log10(np.sum(clean ** 2) / (np.sum(noise ** 2) + 1e-10))
+def compute_snr(signal, noisy):
+    noise = noisy - signal
+    snr = 10 * np.log10(
+        (np.sum(signal ** 2) + 1e-12) / (np.sum(noise ** 2) + 1e-12)
+    )
     return float(snr)
 
-
 def compute_lsd(clean, enhanced):
-    eps = 1e-9
+    eps = 1e-8
     stft_clean = np.abs(librosa.stft(clean)) + eps
     stft_enhanced = np.abs(librosa.stft(enhanced)) + eps
-    lsd = np.mean(np.sqrt(np.mean((20 * np.log10(stft_clean/stft_enhanced)) ** 2, axis=0)))
+    lsd = np.mean(np.sqrt(np.mean((20*np.log10(stft_clean/stft_enhanced))**2, axis=0)))
     return float(lsd)
-
 
 def stereo_energy_balance(left, right):
     L_energy = np.sum(left ** 2)
@@ -89,7 +90,7 @@ def generate_report(original_audio, enhanced_audio, sr, hearing_loss, tuning_gai
     enh_mono = np.mean(enhanced_audio, axis=0)
 
     # 1. SNR
-    snr_before = compute_snr(orig_mono, orig_mono)
+    snr_before = compute_snr(orig_mono, orig_mono + 1e-6)   # no 0-noise
     snr_after = compute_snr(orig_mono, enh_mono)
     delta_snr = snr_after - snr_before
 
@@ -125,7 +126,6 @@ def generate_report(original_audio, enhanced_audio, sr, hearing_loss, tuning_gai
         "tuning_gain_percent": tuning_gain,
         "sample_rate": sr,
         "latency_ms": latency_ms,
-
         "metrics": {
             "snr_before": snr_before,
             "snr_after": snr_after,
